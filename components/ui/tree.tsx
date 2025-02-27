@@ -31,7 +31,8 @@ export default function Tree({currentTreeTime = 0}) {
         const baseBranch: any = sceneTree.newItem(`.tree`);
         baseBranch.setElement(document.querySelector(".tree"));
         baseBranch.set(0, 'opacity', 0);
-        baseBranch.set(1, 'opacity', 1);
+        baseBranch.set(2, 'opacity', 1);
+        baseBranch.set(2, 'display', 'block');
         baseBranch.set(0, "transform", "scale", 0);
         baseBranch.set(POMODORO_TIMER * 60, "transform", "scale", 1);
 
@@ -127,7 +128,7 @@ export default function Tree({currentTreeTime = 0}) {
             
             <div className="slope"></div>
 
-            { (currentTreeTime > 0) && (<>
+            { (currentTreeTime > 3) && (<>
                 <div className="tree">
                     <div className="leaf leaf1"></div>
                     <div className="leaf leaf2"></div>

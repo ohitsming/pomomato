@@ -27,6 +27,7 @@ export default function Home() {
                 // Schedule the next tick
                 timeout = setTimeout(tick, 1000);
             } else if (timeLeft === 0) {
+                console.log(timeLeft)
                 setIsActive(false);
                 setTimeExpired(true);
             }

@@ -74,6 +74,7 @@ body {
     transform-origin: 50% 300px;
     top: 50px;
     margin-left: -8px;
+    display: none;
 }
 
 
