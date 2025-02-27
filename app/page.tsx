@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Tree from '../components/ui/tree'
-import '../components/css/tree.css';
+import Tree from '../components/tree/tree'
+import { formatTime } from '@/lib/utils';
 import { POMODORO_TIMER } from '@/lib/constant';
 
 export default function Home() {
-    const time = POMODORO_TIMER;
+    const time: number = POMODORO_TIMER;
     const [timeLeft, setTimeLeft] = useState(time * 60); // 25 minutes in seconds
     const [timeExpired, setTimeExpired] = useState(false);
     const [isActive, setIsActive] = useState(false);
@@ -54,15 +54,6 @@ export default function Home() {
         setTreeHeight(0);
     };
 
-    const formatTime = (seconds: number) => {
-        if(seconds > 0) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60 | 0;
-            return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-        } 
-        return '00:00'
-    };
-
     return (
         <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 flex items-center justify-center p-4">
             <div className="w-full max-w-md p-6 space-y-10">
@@ -84,6 +75,10 @@ export default function Home() {
                             <div
                                 className="bg-green-600 h-2.5 rounded-full"
                                 style={{ width: `${treeHeight}%` }}
+                                role="progressbar"
+                                aria-valuenow={treeHeight}
+                                aria-valuemin={0}
+                                aria-valuemax={100}
                             />
                         </div>
                     </div>

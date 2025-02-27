@@ -36,19 +36,6 @@ export default function Tree({currentTreeTime = 0}) {
         baseBranch.set(0, "transform", "scale", 0);
         baseBranch.set(POMODORO_TIMER * 60, "transform", "scale", 1);
 
-        // const petals: any = sceneTree.newItem('petals');
-        // petals.setElement(document.querySelector('.background>.flower'));
-        // petals.set(POMODORO_TIMER - 5, 'opacity', 0)
-        // petals.set(POMODORO_TIMER - 5, 'transform', 'translateY(0px) rotate(0deg)')
-        // petals.set(POMODORO_TIMER - 4, 'opacity', 1)
-        // petals.set(POMODORO_TIMER - 4, 'opacity', 1)
-        // petals.set(POMODORO_TIMER, 'opacity', 0)
-        // petals.set(POMODORO_TIMER, 'transform', 'translateY(300px) rotate(360deg)')
-        // petals.setOptions({
-        //     delay: 7,
-        //     iterationCount: "infinite",
-        // })
-
         const branchs = document.querySelectorAll(".tree .branch, .tree .leaf, .tree .flower1");
         const depths = [0, 0, 0];
 
@@ -92,7 +79,7 @@ export default function Tree({currentTreeTime = 0}) {
     return (
         <div className="background">
             { (currentTreeTime >= (POMODORO_TIMER * 60)) && (<>
-                <div className="flower roundpetal petal5 flower1">
+                <div className="flower roundpetal petal5 flower1" data-testid="flower">
                     <div className="petal">
                         <div className="petal">
                             <div className="petal">
@@ -128,13 +115,13 @@ export default function Tree({currentTreeTime = 0}) {
             
             <div className="slope"></div>
 
-            { (currentTreeTime > 3) && (<>
-                <div className="tree">
+            { (currentTreeTime > 0) && (<>
+                <div className="tree" data-testid="tree">
                     <div className="leaf leaf1"></div>
                     <div className="leaf leaf2"></div>
 
 
-                    <div className="branch left branch1">
+                    <div className="branch left branch1" data-testid="branch">
                         <div className="branch left branch-inner1">
                             <div className="leaf leaf1"></div>
                             <div className="leaf leaf2"></div>
@@ -163,7 +150,7 @@ export default function Tree({currentTreeTime = 0}) {
                             </div>
                         </div>
                     </div>
-                    <div className="branch right branch2">
+                    <div className="branch right branch2" data-testid="branch">
                         <div className="branch left branch-inner1">
                             <div className="leaf leaf1"></div>
                             <div className="leaf leaf2"></div>
@@ -215,7 +202,7 @@ export default function Tree({currentTreeTime = 0}) {
                             </div>
                         </div>
                     </div>
-                    <div className="branch left branch3">
+                    <div className="branch left branch3" data-testid="branch">
                         <div className="branch right branch-inner1">
                             <div className="leaf leaf1"></div>
                             <div className="leaf leaf2"></div>
@@ -242,7 +229,7 @@ export default function Tree({currentTreeTime = 0}) {
                             </div>
                         </div>
                     </div>
-                    <div className="branch right branch4">
+                    <div className="branch right branch4" data-testid="branch">
                         <div className="branch left branch-inner1">
                             <div className="leaf leaf1"></div>
                             <div className="leaf leaf2"></div>
@@ -275,7 +262,7 @@ export default function Tree({currentTreeTime = 0}) {
                             </div>
                         </div>
                     </div>
-                    <div className="branch left branch5">
+                    <div className="branch left branch5" data-testid="branch">
                         <div className="branch right branch-inner1">
                             <div className="leaf leaf1"></div>
                             <div className="leaf leaf2"></div>
