@@ -19,18 +19,19 @@ export default function Home() {
             if (isActive && timeLeft > 0) {
                 setTimeLeft((prevTime) => {
                     const newTime = prevTime - 1;
-                    // Calculate tree growth (0 to 100%)
+
+                    if (newTime == 0) {
+                        setIsActive(false);
+                        setTimeExpired(true);
+                    }
+
                     setTreeHeight(((time * 60 - newTime) / (time * 60)) * 100);
                     return newTime;
                 });
     
                 // Schedule the next tick
                 timeout = setTimeout(tick, 1000);
-            } else if (timeLeft === 0) {
-                console.log(timeLeft)
-                setIsActive(false);
-                setTimeExpired(true);
-            }
+            } 
         };
     
         if (isActive && timeLeft > 0) {
