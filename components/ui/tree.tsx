@@ -3,18 +3,13 @@
 import { useEffect, useState } from "react";
 import Scene from "scenejs";
 import '../css/tree.css';
+import { POMODORO_TIMER } from '@/lib/constant';
 
-export default function Tree() {
-
-    const [sceneReady, setSceneReady] = useState(true);
+export default function Tree({currentTreeTime = 0}) {
 
     useEffect(() => {
         const sceneTree = new Scene(
             {
-                ".tree": {
-                    0: { transform: "scale(0)" },
-                    1.5: { transform: "scale(1)" },
-                },
                 ".background>.flower": function (i: any) {
                     return {
                         0: { opacity: 0, transform: "translateY(0px) rotate(0deg)" },
@@ -33,12 +28,35 @@ export default function Tree() {
             }
         );
 
+        const baseBranch: any = sceneTree.newItem(`.tree`);
+        baseBranch.setElement(document.querySelector(".tree"));
+        baseBranch.set(0, 'opacity', 0);
+        baseBranch.set(1, 'opacity', 1);
+        baseBranch.set(0, "transform", "scale", 0);
+        baseBranch.set(POMODORO_TIMER * 60, "transform", "scale", 1);
+
+        // const petals: any = sceneTree.newItem('petals');
+        // petals.setElement(document.querySelector('.background>.flower'));
+        // petals.set(POMODORO_TIMER - 5, 'opacity', 0)
+        // petals.set(POMODORO_TIMER - 5, 'transform', 'translateY(0px) rotate(0deg)')
+        // petals.set(POMODORO_TIMER - 4, 'opacity', 1)
+        // petals.set(POMODORO_TIMER - 4, 'opacity', 1)
+        // petals.set(POMODORO_TIMER, 'opacity', 0)
+        // petals.set(POMODORO_TIMER, 'transform', 'translateY(300px) rotate(360deg)')
+        // petals.setOptions({
+        //     delay: 7,
+        //     iterationCount: "infinite",
+        // })
+
         const branchs = document.querySelectorAll(".tree .branch, .tree .leaf, .tree .flower1");
         const depths = [0, 0, 0];
 
+        const userDefinedTime = POMODORO_TIMER; // Example: User-defined time in seconds
+        const totalOriginalTime = 7; // Original total animation time in seconds
+        const timeScale = (totalOriginalTime / userDefinedTime) * 1.3;
+
         branchs.forEach((branch, i) => {
             const className = branch.className;
-
             const sceneItem: any = sceneTree.newItem(`item${i}`);
 
             if (className.includes("branch-inner")) {
@@ -54,25 +72,25 @@ export default function Tree() {
             }
 
             sceneItem.setElement(branch);
-            // sceneItem.setCSS(0, ["transform"]);
+            const branchTime = (1 + depths[0] * 0.5 + depths[1] * 0.5 + depths[2] * 0.5) * timeScale;
 
-            const time = 1 + depths[0] * 0.5 + depths[1] * 0.5 + depths[2] * 0.5;
-            sceneItem.set(time, "transform", "scale", 0);
-            sceneItem.set(time + 1, "transform", "scale", 1);
+            sceneItem.set(branchTime, "transform", "scale", 0);
+            sceneItem.set(branchTime + (1 * timeScale) , "transform", "scale", 1);
         });
 
-        sceneTree.playCSS();
+        sceneTree.setTime(currentTreeTime);
 
-        return () => {
-            sceneTree.clear();
-        };
+        return (() => {
+            sceneTree.clear()
+        })
 
-    }, []);
 
+    }, [currentTreeTime]);
+    
 
     return (
         <div className="background">
-            { sceneReady && (<>
+            { (currentTreeTime >= (POMODORO_TIMER * 60)) && (<>
                 <div className="flower roundpetal petal5 flower1">
                     <div className="petal">
                         <div className="petal">
@@ -109,7 +127,7 @@ export default function Tree() {
             
             <div className="slope"></div>
 
-            {sceneReady && (<>
+            { (currentTreeTime > 0) && (<>
                 <div className="tree">
                     <div className="leaf leaf1"></div>
                     <div className="leaf leaf2"></div>

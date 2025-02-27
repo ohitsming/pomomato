@@ -1,0 +1,1 @@
+export const POMODORO_TIMER = 1;
