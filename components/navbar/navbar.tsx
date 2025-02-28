@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import KofiDonationPanel from '@/components/kofi/kofi';
 
 interface NavLink {
     label: string;
@@ -57,23 +57,25 @@ const OverlayNavbar = ({
                 <div className="w-32"></div>
 
                 {/* Hamburger Button */}
-                <button
-                    onClick={toggleMenu}
-                    className="z-10 focus:outline-none"
-                    aria-label={isOpen ? "Close menu" : "Open menu"}
-                >
-                    <div className="relative w-6 h-5">
-                        <span className={`absolute h-0.5 w-6 bg-black transform transition-all duration-300 ${isOpen ? 'rotate-45 top-2' : 'top-0'}`}></span>
-                        <span className={`absolute h-0.5 w-6 bg-black top-2 transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-                        <span className={`absolute h-0.5 w-6 bg-black transform transition-all duration-300 ${isOpen ? '-rotate-45 top-2' : 'top-4'}`}></span>
-                    </div>
-                </button>
+                <div className="relative h-10 w-10 flex items-center justify-center">
+                    <button
+                        onClick={toggleMenu}
+                        className="absolute inset-0 z-10 focus:outline-none"
+                        aria-label={isOpen ? "Close menu" : "Open menu"}
+                    >
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <span className={`absolute h-0.5 w-6 bg-black transform transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'}`}></span>
+                            <span className={`absolute h-0.5 w-6 bg-black transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+                            <span className={`absolute h-0.5 w-6 bg-black transform transition-all duration-300 ${isOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'}`}></span>
+                        </div>
+                    </button>
+                </div>
 
                 {/* Overlay Menu */}
                 {isOpen && (<>
                     <div className={`fixed inset-0 bg-white transition-all duration-500 flex flex-col justify-center items-center ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
 
-                        <nav className="text-center">
+                        <nav className="text-center" role="navigation">
                             <ul className="space-y-8">
                                 {links.map((link, index) => (
                                     <li key={index} className="text-2xl font-medium">
@@ -86,6 +88,9 @@ const OverlayNavbar = ({
                                         </Link>
                                     </li>
                                 ))}
+                                <li>
+                                    <KofiDonationPanel />
+                                </li>
                             </ul>
                         </nav>
                     </div>

@@ -62,7 +62,7 @@ export default function Home() {
                     <p className="text-green-600 dark:text-green-300">Focus and grow your tree</p>
                 </div>
 
-                <div className="relative flex justify-center py-8 h-[45vh]">
+                <div className="relative flex justify-center py-8 h-[40vh]">
                     <Tree currentTreeTime={(time * 60) - (timeLeft)}></Tree>
                 </div>
 
