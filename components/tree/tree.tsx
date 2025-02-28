@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import Scene from "scenejs";
+import Scene, { SceneItem } from "scenejs";
 import '../css/tree.css';
 import { POMODORO_TIMER } from '@/lib/constant';
 
@@ -39,9 +39,9 @@ export default function Tree({currentTreeTime = 0}) {
         const branchs = document.querySelectorAll(".tree .branch, .tree .leaf, .tree .flower1");
         const depths = [0, 0, 0];
 
-        const userDefinedTime = POMODORO_TIMER; // Example: User-defined time in seconds
+        const userDefinedTime = POMODORO_TIMER * 60; // Example: User-defined time in seconds
         const totalOriginalTime = 7; // Original total animation time in seconds
-        const timeScale = (totalOriginalTime / userDefinedTime) * 1.3;
+        const timeScale = (userDefinedTime/ totalOriginalTime );
 
         branchs.forEach((branch, i) => {
             const className = branch.className;

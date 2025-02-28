@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Tree from '../components/tree/tree'
 import { formatTime } from '@/lib/utils';
 import { POMODORO_TIMER } from '@/lib/constant';
+
 
 export default function Home() {
     const time: number = POMODORO_TIMER;
@@ -11,37 +12,46 @@ export default function Home() {
     const [timeExpired, setTimeExpired] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
+    const startTimeRef = useRef<number | null>(null);
+    const animationFrameRef = useRef<number | null>(null);
+
+    const updateTimer = () => {
+        if (isActive) {
+            const now = Date.now();
+            const elapsedTime = Math.floor((now - (startTimeRef.current || now)) / 1000);
+            const newTimeLeft = time * 60 - elapsedTime;
+
+            if (newTimeLeft <= 0) {
+                setTimeLeft(0);
+                setIsActive(false);
+                setTimeExpired(true);
+                setTreeHeight(100);
+            } else {
+                setTimeLeft(newTimeLeft);
+                setTreeHeight((elapsedTime / (time * 60)) * 100);
+            }
+
+            // Request the next frame
+            animationFrameRef.current = requestAnimationFrame(updateTimer);
+        }
+    };
 
     useEffect(() => {
-        let timeout: NodeJS.Timeout;
-    
-        const tick = () => {
-            if (isActive && timeLeft > 0) {
-                setTimeLeft((prevTime) => {
-                    const newTime = prevTime - 1;
-
-                    if (newTime == 0) {
-                        setIsActive(false);
-                        setTimeExpired(true);
-                    }
-
-                    setTreeHeight(((time * 60 - newTime) / (time * 60)) * 100);
-                    return newTime;
-                });
-    
-                // Schedule the next tick
-                timeout = setTimeout(tick, 1000);
-            } 
-        };
-    
-        if (isActive && timeLeft > 0) {
-            // Start the first tick
-            timeout = setTimeout(tick, 1000);
+        if (isActive) {
+            startTimeRef.current = Date.now() - (time * 60 - timeLeft) * 1000;
+            animationFrameRef.current = requestAnimationFrame(updateTimer);
+        } else {
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
         }
 
-    
-        return () => clearTimeout(timeout);
-    }, [isActive, timeLeft]);
+        return () => {
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
+    }, [isActive]);
 
     const toggleTimer = () => {
         setIsActive(!isActive);
@@ -52,6 +62,9 @@ export default function Home() {
         setTimeExpired(false);
         setTimeLeft(time * 60);
         setTreeHeight(0);
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+        }
     };
 
     return (

@@ -15,11 +15,19 @@ jest.mock('../components/tree/tree', () => {
 
 describe('Home Component', () => {
     beforeAll(() => {
-        jest.useFakeTimers(); // Enable fake timers
+        jest.useFakeTimers();
+        jest.spyOn(global, 'requestAnimationFrame').mockImplementation((cb) => {
+            const timeoutId = setTimeout(() => cb(Date.now()), 0);
+            return timeoutId as unknown as number; // Cast to number to match the expected type
+        });
+        jest.spyOn(global, 'cancelAnimationFrame').mockImplementation((id) => {
+            clearTimeout(id);
+        });
     });
-
+    
     afterAll(() => {
-        jest.useRealTimers(); // Restore real timers
+        jest.useRealTimers();
+        jest.restoreAllMocks();
     });
 
     it('should render tree height', () => {
