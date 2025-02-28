@@ -1,1 +1,0 @@
-export const POMODORO_TIMER = parseInt(process?.env?.NEXT_PUBLIC_POMODORO_TIMER || '25');
