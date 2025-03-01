@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 
 // Define your navigation links
 const navLinks = [
-    { label: 'Home', href: '' },
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' }
 ];
 
 export default function RootLayout({
@@ -30,7 +31,9 @@ export default function RootLayout({
                     logoAlt="Pomomato Logo"
                 ></OverlayNavbar>
                 <main>
-                    {children}
+                    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 ">
+                        {children}
+                    </div>
                 </main>
             </body>
         </html>

@@ -25,18 +25,6 @@ const OverlayNavbar = ({
     const [scrolled, setScrolled] = useState(false);
     const [isHomePage, setIsHomePage] = useState(true);
 
-    // Handle scroll effect
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
     // Toggle menu
     const toggleMenu = () => {
         setIsOpen(!isOpen);
