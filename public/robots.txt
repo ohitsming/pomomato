@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://pomomato.com
+
+# Sitemaps
+Sitemap: https://pomomato.com/sitemap.xml

@@ -28,13 +28,6 @@ const OverlayNavbar = ({
     // Toggle menu
     const toggleMenu = () => {
         setIsOpen(!isOpen);
-
-        // Prevent scrolling when menu is open
-        if (!isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
     };
 
     return (
@@ -61,26 +54,31 @@ const OverlayNavbar = ({
 
                 {/* Overlay Menu */}
                 {isOpen && (<>
-                    <div className={`fixed inset-0 bg-white transition-all duration-500 flex flex-col justify-center items-center ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-
-                        <nav className="text-center" role="navigation">
-                            <ul className="space-y-8">
-                                {links.map((link, index) => (
-                                    <li key={index} className="text-2xl font-medium">
-                                        <Link
-                                            href={link.href}
-                                            onClick={toggleMenu}
-                                            className="relative hover:text-blue-600 transition-colors duration-300 py-2 px-4"
-                                        >
-                                            {link.label}
-                                        </Link>
+                    <div
+                        className={`fixed inset-0 bg-white transition-all duration-500 flex flex-col justify-center items-center ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+                            }`}
+                    >
+                        {/* Scrollable container */}
+                        <div className="overflow-y-auto w-full max-h-screen py-8">
+                            <nav className="text-center" role="navigation">
+                                <ul className="space-y-8">
+                                    {links.map((link, index) => (
+                                        <li key={index} className="text-2xl font-medium">
+                                            <Link
+                                                href={link.href}
+                                                onClick={toggleMenu}
+                                                className="relative hover:text-blue-600 transition-colors duration-300 py-2 px-4"
+                                            >
+                                                {link.label}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                    <li>
+                                        <KofiDonationPanel />
                                     </li>
-                                ))}
-                                <li>
-                                    <KofiDonationPanel />
-                                </li>
-                            </ul>
-                        </nav>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </>)}
             </div>

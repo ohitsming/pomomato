@@ -6,8 +6,33 @@ import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-    title: 'Pomomato',
-    description: 'Pomodoro AI Studying Tool',
+    title: 'Pomomato AI - Boost Productivity with Focus Sessions.',
+    description: `Pomomato AI combines the Pomodoro Technique with AI-powered smart focus 
+        sessions to boost productivity. Stay focused, beat procrastination, and achieve more 
+        with personalized insights and task prioritization.`,
+    keywords: ['Pomomato AI', 'Pomodoro Technique', 'productivity', 'focus sessions', 'AI-powered'],
+    openGraph: {
+        title: 'Pomomato AI - Boost Productivity with Smart Focus Sessions',
+        description:
+            'Pomomato AI combines the Pomodoro Technique with AI-powered smart focus sessions to boost productivity. Stay focused, beat procrastination, and achieve more with personalized insights and task prioritization.',
+        images: 'https://www.pomomato.com/metadata/logo.png',
+        url: 'https://www.pomomato.com',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Pomomato AI - Boost Productivity with Smart Focus Sessions',
+        description:
+            'Pomomato AI combines the Pomodoro Technique with AI-powered smart focus sessions to boost productivity. Stay focused, beat procrastination, and achieve more with personalized insights and task prioritization.',
+        images: 'https://www.pomomato.com/metadata/logo.png',
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+        },
+    }
 };
 
 // Define your navigation links
@@ -23,15 +48,15 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-
             <body className={inter.className}>
                 <OverlayNavbar
                     links={navLinks}
                     logo="/metadata/logo.png"
                     logoAlt="Pomomato Logo"
                 ></OverlayNavbar>
+
                 <main>
-                    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 ">
+                    <div className="sm:px-6 lg:px-8 bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 ">
                         {children}
                     </div>
                 </main>

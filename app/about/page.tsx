@@ -11,7 +11,7 @@ const features = [
     {
         name: 'Integrated Note-Taking',
         description:
-            'Jot down notes during your Pomodoro sessions to capture ideas, key points, or tasks. After the timer ends, review and summarize your notes to reinforce learning and track progress.',
+            'Jot down notes during your Pomodoro sessions to capture ideas, key points, or tasks. After the timer ends, use AI-powered summaries to review and condense your notes, reinforcing learning and helping you track progress effortlessly.',
         href: '#',
         icon: DocumentTextIcon,
     },
