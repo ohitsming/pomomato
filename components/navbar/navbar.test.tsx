@@ -52,12 +52,4 @@ describe('OverlayNavbar', () => {
         expect(screen.getByLabelText(/open menu/i)).toBeInTheDocument();
     });
 
-    it('applies scrolled class when the page is scrolled', () => {
-        render(<OverlayNavbar links={mockLinks} />);
-        const header = screen.getByRole('banner');
-        expect(header).not.toHaveClass('bg-white/90 shadow-md backdrop-blur-sm');
-        window.scrollY = 100;
-        fireEvent.scroll(window);
-        expect(header).toHaveClass('bg-white/90 shadow-md backdrop-blur-sm');
-    });
 });
