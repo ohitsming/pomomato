@@ -2,11 +2,15 @@ import OverlayNavbar from '@/components/navbar/navbar';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'Pomomato AI - Boost Productivity with Focus Sessions.',
+    icons: {
+        icon: "/metadata/icon.ico"
+    },
     description: `Pomomato AI combines the Pomodoro Technique with AI-powered smart focus 
         sessions to boost productivity. Stay focused, beat procrastination, and achieve more 
         with personalized insights and task prioritization.`,
@@ -61,6 +65,7 @@ export default function RootLayout({
                     </div>
                 </main>
             </body>
+            <GoogleAnalytics gaId="G-W26QHF4ZHG" />
         </html>
 
     );
