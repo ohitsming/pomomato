@@ -6,7 +6,7 @@ import { formatTime } from '@/lib/utils';
 import { POMODORO_TIMER } from '@/lib/constant';
 
 
-export default function HomeComponent() {
+export default function HomeComponent({toggleSplit}: any) {
     const time: number = POMODORO_TIMER;
     const [timeLeft, setTimeLeft] = useState(time * 60); // 25 minutes in seconds
     const [timeExpired, setTimeExpired] = useState(false);
@@ -14,6 +14,10 @@ export default function HomeComponent() {
     const [treeHeight, setTreeHeight] = useState(0);
     const startTimeRef = useRef<number | null>(null);
     const animationFrameRef = useRef<number | null>(null);
+
+    const toggle = () => {
+        toggleSplit()
+    }
 
     const updateTimer = () => {
         if (isActive) {
@@ -113,6 +117,12 @@ export default function HomeComponent() {
                                 className={(timeExpired ? "w-full" : "w-32") +  " px-4 py-2 bg-white text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition-colors"}
                             >
                                 Reset
+                            </button>
+                            <button 
+                                onClick={toggle}
+                                className="w-32 px-4 py-2 bg-white text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition-colors"
+                            >
+                                Notes
                             </button>
                         </div>
                     </div>
