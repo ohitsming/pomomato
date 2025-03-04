@@ -1,28 +1,58 @@
-import Script from 'next/script';
 
-const KofiDonationPanel = () => {
-    return (
-        <div 
-            style={{ maxWidth: '600px', margin: '20px auto', textAlign: 'center' }} 
-            data-testid="kofi-donation-panel-container"
-        >
-            <iframe
-                id="kofiframe"
-                src="https://ko-fi.com/workcoholic/?hidefeed=true&widget=true&embed=true&preview=true"
-                style={{ border: '1px', width: '100%', padding: '4px', borderRadius: '8px', transform: 'scale(0.9)' }}
-                height="712"
-                title="your-ko-fi-username"
-            ></iframe>
+import React, { useEffect } from 'react';
 
+const KofiWidget = ({
+    username = 'workcoholic',
+    type = 'floating-chat',
+    donateButtonText = 'Support Us',
+    donateButtonBackgroundColor = '#00b9fe',
+    donateButtonTextColor = '#fff',
+}) => {
+    useEffect(() => {
+        // Create script for Ko-fi CDN
+        const script = document.createElement('script');
+        script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+        script.async = true;
+        script.onload = () => {
+            // Once the script is loaded, configure and initialize the widget
+            try {
+                if (window?.kofiWidgetOverlay) {
+                    window.kofiWidgetOverlay.draw(username, {
+                        'type': type,
+                        'floating-chat.donateButton.text': donateButtonText,
+                        'floating-chat.donateButton.background-color': donateButtonBackgroundColor,
+                        'floating-chat.donateButton.text-color': donateButtonTextColor
+                    });
+                }
+            } catch (ex) {
+                //ignore error
+            }
 
-            <Script id="kofi-donation-panel">
-                {`
-                    const iframe = document.getElementById('kofiframe');
-                    iframe.src = 'https://ko-fi.com/workcoholic/?hidefeed=true&widget=true&embed=true&preview=true';
-                `}
-            </Script>
-        </div>
-    );
+        };
+
+        // Append script to the document
+        document.body.appendChild(script);
+
+        // Cleanup function to remove the widget when component unmounts
+        return () => {
+            // Remove the script
+            document.body.removeChild(script);
+
+            // Remove any Ko-fi widget elements that were created
+            const kofiIframe = document.getElementById('kofi-widget-iframe');
+            if (kofiIframe) {
+                kofiIframe.remove();
+            }
+
+            // Clear any global variables the widget might have set
+            if (window?.kofiWidgetOverlay) {
+                window.kofiWidgetOverlay = undefined;
+            }
+        };
+    }, [username, type, donateButtonText, donateButtonBackgroundColor, donateButtonTextColor]);
+
+    // This component doesn't render anything directly - it just injects the Ko-fi script
+    return null;
 };
 
-export default KofiDonationPanel;
+export default KofiWidget;

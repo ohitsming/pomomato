@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import Tree from '@/components/tree/tree'
 import { formatTime } from '@/lib/utils';
 import { POMODORO_TIMER } from '@/lib/constant';
-
+import { useAuth } from "react-oidc-context";
+import LoginModal from '../login/login';
 
 export default function HomeComponent({toggleSplit}: any) {
     const time: number = POMODORO_TIMER;
@@ -12,12 +13,39 @@ export default function HomeComponent({toggleSplit}: any) {
     const [timeExpired, setTimeExpired] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const startTimeRef = useRef<number | null>(null);
     const animationFrameRef = useRef<number | null>(null);
 
+    const auth= useAuth();
+
     const toggle = () => {
-        toggleSplit()
+        if(auth.isAuthenticated) {
+            toggleSplit()
+        } else {
+            setIsModalOpen(true);
+        }
     }
+
+    // set time is/not active
+    const toggleTimer = () => {
+        setIsActive(!isActive);
+    };
+
+    const resetTimer = () => {
+        setIsActive(false);
+        setTimeExpired(false);
+        setTimeLeft(time * 60);
+        setTreeHeight(0);
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+        }
+    };
+    
+    const onCloseModal = () => {
+        // check auth 
+        setIsModalOpen(false);
+    };
 
     const updateTimer = () => {
         if (isActive) {
@@ -37,9 +65,7 @@ export default function HomeComponent({toggleSplit}: any) {
 
             // Request the next frame
             animationFrameRef.current = requestAnimationFrame(updateTimer);
-            document.title = formatTime(timeLeft).toString() + " - Pomomato";
         }
-        document.title = "Pomomato"
     };
 
     useEffect(() => {
@@ -58,20 +84,6 @@ export default function HomeComponent({toggleSplit}: any) {
             }
         };
     }, [isActive]);
-
-    const toggleTimer = () => {
-        setIsActive(!isActive);
-    };
-
-    const resetTimer = () => {
-        setIsActive(false);
-        setTimeExpired(false);
-        setTimeLeft(time * 60);
-        setTreeHeight(0);
-        if (animationFrameRef.current) {
-            cancelAnimationFrame(animationFrameRef.current);
-        }
-    };
 
     return (
         <>
@@ -118,16 +130,21 @@ export default function HomeComponent({toggleSplit}: any) {
                             >
                                 Reset
                             </button>
-                            <button 
+                            {/* <button 
                                 onClick={toggle}
                                 className="w-32 px-4 py-2 bg-white text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition-colors"
                             >
                                 Notes
-                            </button>
+                            </button> */}
+                        </div>
+                        <div className='flex justify-center space-x-4 hyperlink cursor-pointer'>
+                            {/* update logic: if not auth => need to prompt user to signin before continue, else open note book */}
+                            <button onClick={() => toggle()} className='text-xs text-green-900 hover:underline'>Start a focus session with quick notes</button>
                         </div>
                     </div>
                 </div>
             </div>
+            <LoginModal isOpen={isModalOpen} onClose={onCloseModal} />
         </>
     );
 }

@@ -3,6 +3,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google'
+import Providers from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -52,20 +53,21 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={inter.className}>
-                <OverlayNavbar
-                    links={navLinks}
-                    logo="/metadata/logo.png"
-                    logoAlt="Pomomato Logo"
-                ></OverlayNavbar>
+            <Providers>
+                <body className={inter.className}>
+                    <OverlayNavbar
+                        links={navLinks}
+                    ></OverlayNavbar>
 
-                <main>
-                    <div className="sm:px-6 lg:px-8 bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 ">
-                        {children}
-                    </div>
-                </main>
-            </body>
-            <GoogleAnalytics gaId="G-W26QHF4ZHG" />
+                    <main>
+                        <div className="sm:px-6 lg:px-8 bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 ">
+                            {children}
+                        </div>
+                    </main>
+                </body>
+            </Providers>
+
+            <GoogleAnalytics gaId="G-W26QHF4ZHG"></GoogleAnalytics>
         </html>
 
     );
