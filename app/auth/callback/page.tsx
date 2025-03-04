@@ -9,7 +9,6 @@ export default function CallbackPage() {
     const router = useRouter();
 
     useEffect(() => {
-        console.log(auth)
         if (!auth.isLoading && auth.isAuthenticated) {
             router.push("/");
         } 
