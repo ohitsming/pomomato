@@ -1,9 +1,9 @@
 import OverlayNavbar from '@/components/navbar/navbar';
-import './globals.css';
+import 'styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google'
-import Providers from './providers';
+import Providers from '../components/providers/providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 
 // Define your navigation links
 const navLinks = [
-    { label: 'Home', href: '/' },
+    { label: 'Home', href: '' },
     { label: 'About', href: '/about' }
 ];
 
