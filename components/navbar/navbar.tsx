@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import KofiDonationPanel from '@/components/kofi/kofi';
+
+import { useAuth } from "react-oidc-context";
 
 interface NavLink {
     label: string;
@@ -18,12 +18,30 @@ interface OverlayNavbarProps {
 
 const OverlayNavbar = ({
     links,
-    logo = '/logo.svg',
-    logoAlt = 'Site Logo'
 }: OverlayNavbarProps) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-    const [isHomePage, setIsHomePage] = useState(true);
+    const auth = useAuth();
+
+    const domain = process.env.NEXT_PUBLIC_DOMAIN_URI || "https://pomomato.com"
+    const signoutRedirect = () => {
+        const clientId = "1u3j6frgqicjk5pe6ujm8ibono";
+        const logoutUri = domain + "/auth/callback";
+        const cognitoDomain = "https://us-west-1umxg15vxd.auth.us-west-1.amazoncognito.com";
+        const idToken = localStorage.getItem('id_token')
+        // window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}&id_token_hint=${idToken}`;
+        auth.signoutSilent({
+            id_token_hint: auth.user?.id_token,
+            post_logout_redirect_uri: domain + "/auth/callback"
+        }).then(() => {
+            sessionStorage.removeItem('id_token');
+            sessionStorage.removeItem('access_token')
+            sessionStorage.removeItem('refresh_token')
+            localStorage.removeItem('id_token');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+        })
+
+    };
 
     // Toggle menu
     const toggleMenu = () => {
@@ -31,7 +49,7 @@ const OverlayNavbar = ({
     };
 
     return (
-        <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 shadow-md backdrop-blur-sm' : 'bg-transparent'}`}>
+        <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent`}>
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
 
                 {/* Empty div to maintain flex layout on home page */}
@@ -42,7 +60,6 @@ const OverlayNavbar = ({
                     <button
                         onClick={toggleMenu}
                         className="absolute inset-0 z-10 focus:outline-none"
-                        aria-label={isOpen ? "Close menu" : "Open menu"}
                     >
                         <div className="absolute inset-0 flex items-center justify-center">
                             <span className={`absolute h-0.5 w-6 bg-black transform transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'}`}></span>
@@ -73,9 +90,18 @@ const OverlayNavbar = ({
                                             </Link>
                                         </li>
                                     ))}
-                                    <li>
-                                        <KofiDonationPanel />
-                                    </li>
+                                    { auth.isAuthenticated ? (
+                                        <>
+                                            <li className="text-2xl font-medium">
+                                                <button onClick={() => signoutRedirect()}>Sign Out</button>
+                                            </li>
+                                        </>
+                                    ) : <>
+                                            <li className="text-2xl font-medium">
+                                                <button onClick={() => auth.signinRedirect()}>Login</button>
+                                            </li>
+                                        </>
+                                    }
                                 </ul>
                             </nav>
                         </div>

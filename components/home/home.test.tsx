@@ -1,11 +1,11 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom'
-import Home from './page'; // Adjust the import path as needed
+import Home from '@/components/home/home'; // Adjust the import path as needed
 import { POMODORO_TIMER } from '@/lib/constant'; // Adjust the import path as needed
 import { formatTime } from '@/lib/utils';
 
 // Mock the Tree component
-jest.mock('../components/tree/tree', () => {
+jest.mock('../tree/tree', () => {
     return function MockTree({ currentTreeTime }: { currentTreeTime: number }) {
         return <div data-testid="mock-tree">Tree Component (Time: {currentTreeTime})</div>;
     };
