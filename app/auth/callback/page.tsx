@@ -17,6 +17,9 @@ export default function CallbackPage() {
             localStorage.removeItem('id_token');
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
+            sessionStorage.removeItem('id_token');
+            sessionStorage.removeItem('access_token');
+            sessionStorage.removeItem('refresh_token');
             router.push("/")
         }
     }, [auth, router]);

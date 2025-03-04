@@ -1,8 +1,14 @@
 // components/NoteComponent.tsx
 import { useState } from 'react';
-import ReactQuill from 'react-quill';
+import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css'; // Import the styles
 import { FaTrash } from 'react-icons/fa'; // Import the trash can icon
+
+
+const ReactQuill = dynamic(() => import('react-quill'), {
+    ssr: false, // Disable server-side rendering for this component
+})
+
 
 type Note = {
     id: number;

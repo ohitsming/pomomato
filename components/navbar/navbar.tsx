@@ -24,21 +24,9 @@ const OverlayNavbar = ({
 
     const domain = process.env.NEXT_PUBLIC_DOMAIN_URI || "https://pomomato.com"
     const signoutRedirect = () => {
-        const clientId = "1u3j6frgqicjk5pe6ujm8ibono";
-        const logoutUri = domain + "/auth/callback";
-        const cognitoDomain = "https://us-west-1umxg15vxd.auth.us-west-1.amazoncognito.com";
-        const idToken = localStorage.getItem('id_token')
-        // window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}&id_token_hint=${idToken}`;
         auth.signoutSilent({
             id_token_hint: auth.user?.id_token,
             post_logout_redirect_uri: domain + "/auth/callback"
-        }).then(() => {
-            sessionStorage.removeItem('id_token');
-            sessionStorage.removeItem('access_token')
-            sessionStorage.removeItem('refresh_token')
-            localStorage.removeItem('id_token');
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
         })
 
     };
