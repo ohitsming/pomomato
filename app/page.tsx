@@ -5,6 +5,7 @@ import RichTextEditor from "@/components/notes/notes";
 import { ProtectedRoute } from "@/components/protected/protected";
 import KofiWidget from "@/components/kofi/kofi";
 import { useAuth } from "react-oidc-context";
+import NoteComponent from "@/components/notebook/notebook";
 
 export default function Home() {
     const [isSplit, setIsSplit] = useState(false);
@@ -35,7 +36,8 @@ export default function Home() {
                     {isSplit && (
                         <ProtectedRoute>
                             <div className={`${isSplit ? "md:w-3/5" : "w-full"} h-full p-5 overflow-y-auto my-16`}>
-                                <RichTextEditor />
+                                {/* <RichTextEditor /> */}
+                                <NoteComponent></NoteComponent>
                             </div>
                         </ProtectedRoute>
                     )}

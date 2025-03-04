@@ -8,27 +8,31 @@ import Providers from './providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-    title: 'Pomomato AI - Boost Productivity with Focus Sessions.',
+    metadataBase: new URL(process.env.NEXT_PUBLIC_DOMAIN_URI || 'https://pomomato.com'),
+    title: 'Pomomato AI - Pomodoro Technique With Focus Sessions And AI To Boost Productivity.',
     icons: {
         icon: "/metadata/icon.ico"
     },
-    description: `Pomomato AI combines the Pomodoro Technique with AI-powered smart focus 
-        sessions to boost productivity. Stay focused, beat procrastination, and achieve more 
+    description: `Pomomato AI combines the Pomodoro Technique with smart focus 
+        sessions and AI powered study tools to boost productivity. Stay focused, beat procrastination, and achieve more 
         with personalized insights and task prioritization.`,
     keywords: ['Pomomato AI', 'Pomodoro Technique', 'productivity', 'focus sessions', 'AI-powered'],
     openGraph: {
-        title: 'Pomomato AI - Boost Productivity with Smart Focus Sessions',
+        title: 'Pomomato AI - Pomodoro Technique With Focus Session And AI to Boost Productivity',
         description:
-            'Pomomato AI combines the Pomodoro Technique with AI-powered smart focus sessions to boost productivity. Stay focused, beat procrastination, and achieve more with personalized insights and task prioritization.',
-        images: 'https://pomomato.com/metadata/logo.png',
-        url: 'https://pomomato.com',
+            `Pomomato AI combines the Pomodoro Technique with smart focus 
+            sessions and AI powered study tools to boost productivity. Stay focused, beat procrastination, and achieve more 
+            with personalized insights and task prioritization.`,
+        images: '/metadata/logo.png',
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Pomomato AI - Boost Productivity with Smart Focus Sessions',
+        title: 'Pomomato AI - Pomodoro Technique With Focus Session And AI to Boost Productivity',
         description:
-            'Pomomato AI combines the Pomodoro Technique with AI-powered smart focus sessions to boost productivity. Stay focused, beat procrastination, and achieve more with personalized insights and task prioritization.',
-        images: 'https://pomomato.com/metadata/logo.png',
+            `Pomomato AI combines the Pomodoro Technique with smart focus 
+            sessions and AI powered study tools to boost productivity. Stay focused, beat procrastination, and achieve more 
+            with personalized insights and task prioritization.`,
+        images:  '/metadata/logo.png',
     },
     robots: {
         index: true,
