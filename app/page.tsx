@@ -13,8 +13,10 @@ export default function Home() {
 
 
     useEffect(() => {
-        console.log(auth)
-    }, [])
+        if(!auth.isAuthenticated) {
+            setIsSplit(false);
+        }
+    }, [auth])
 
     const toggleNotebook = () => {
 

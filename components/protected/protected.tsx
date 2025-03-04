@@ -13,7 +13,7 @@ export const ProtectedRoute = ({ children }: any) => {
     }, [auth, router]);
 
     if (auth.isLoading) {
-        return <div>Loading...</div>;
+        return <div></div>;
     }
 
     if (!auth.isAuthenticated) {
