@@ -1,14 +1,15 @@
 // components/NoteComponent.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css'; // Import the styles
 import { FaTrash } from 'react-icons/fa'; // Import the trash can icon
+import { useAuth } from 'react-oidc-context';
+import { Note as API_NOTE } from '@/app/api/notes/route';
 
 
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false, // Disable server-side rendering for this component
 })
-
 
 type Note = {
     id: number;
@@ -18,6 +19,7 @@ type Note = {
 const NoteComponent = () => {
     const [notes, setNotes] = useState<Note[]>([]);
     const [newNote, setNewNote] = useState<string>('');
+    const auth = useAuth();
 
     // Rich text editor modules and formats
     const modules = {
@@ -25,8 +27,7 @@ const NoteComponent = () => {
             [{ header: [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'image'],
-            ['clean'],
+            ['link'],
         ],
     };
 
@@ -39,12 +40,35 @@ const NoteComponent = () => {
         'list',
         'bullet',
         'link',
-        'image',
     ];
 
-    const handleAddNote = () => {
-        if (newNote.trim() !== '') {
-            setNotes([...notes, { id: Date.now(), content: newNote }]);
+    const handleAddNote = async() => {
+        const token = auth.user?.access_token;
+        if (newNote.trim() !== '' && token) {
+            
+            try {
+                const response = await fetch('/api/notes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ content: newNote }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to save note');
+                }
+
+                const data = await response.json();
+                console.log(data)
+
+            } catch (error) {
+                console.error(error);
+            } 
+
+            fetchNotes();
+            // setNotes([...notes, { id: Date.now(), content: newNote }]);
             setNewNote('');
         }
     };
@@ -52,6 +76,38 @@ const NoteComponent = () => {
     const handleDeleteNote = (id: number) => {
         setNotes(notes.filter((note) => note.id !== id));
     };
+
+    async function fetchNotes() {
+        try {
+            const token = auth.user?.access_token;
+            
+            if(token) {
+                const response = await fetch('/api/notes', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                
+                const transformedNotes: Note[] = data.data.map((note: API_NOTE) => ({
+                    id: note._id, 
+                    content: note.content, 
+                }));
+
+                // Set the transformed notes into the state
+                setNotes(transformedNotes);
+            }
+            
+        } catch (error) {
+            console.error('Error fetching notes:', error);
+        }
+    }
+    
+    useEffect(() => {
+
+        fetchNotes();
+        
+    }, [auth]);
 
     return (
         <div className="flex justify-center items-center h-[calc(100vh-110px)] bg-green-100 p-3">
