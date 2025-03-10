@@ -61,7 +61,6 @@ const NoteComponent = () => {
                 }
 
                 const data = await response.json();
-                console.log(data)
 
             } catch (error) {
                 console.error(error);
@@ -89,13 +88,15 @@ const NoteComponent = () => {
                 });
                 const data = await response.json();
                 
-                const transformedNotes: Note[] = data.data.map((note: API_NOTE) => ({
-                    id: note._id, 
-                    content: note.content, 
-                }));
-
-                // Set the transformed notes into the state
-                setNotes(transformedNotes);
+                if(data?.data && data.data.length > 0) {
+                    const transformedNotes: Note[] = data.data.map((note: API_NOTE) => ({
+                        id: note.note_id, 
+                        content: note.content, 
+                    }));
+    
+                    setNotes(transformedNotes);
+                }
+                
             }
             
         } catch (error) {
@@ -106,7 +107,7 @@ const NoteComponent = () => {
     useEffect(() => {
 
         fetchNotes();
-        
+
     }, [auth]);
 
     return (

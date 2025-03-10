@@ -11,6 +11,9 @@
     "sitemap": "next-sitemap"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.758.0",
+    "@aws-sdk/lib-dynamodb": "^3.758.0",
+    "@aws-sdk/util-dynamodb": "^3.758.0",
     "@emotion/css": "^11.13.5",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.9.0",
@@ -89,6 +92,7 @@
     "three": "^0.173.0",
     "three-stdlib": "^2.35.14",
     "typescript": "5.2.2",
+    "uuid": "^11.1.0",
     "vaul": "^0.9.9",
     "zod": "^3.23.8"
   },
