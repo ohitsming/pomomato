@@ -86,7 +86,6 @@ const NoteComponent = () => {
                     },
                 });
                 const data = await response.json();
-                console.log(data)
 
                 if(data?.data && data.data.length > 0) {
                     const transformedNotes: Note[] = data.data.map((note: API_NOTE) => ({

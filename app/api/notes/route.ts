@@ -56,7 +56,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ message: 'Notes fetched', data: notes });
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ message: error }, { status: 500 });
     }
 }
 
