@@ -1,13 +1,24 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
+import { DynamoDBClient, PutItemCommand, QueryCommand, ExecuteStatementCommand } from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { verifyToken } from '@/lib/auth';
-import { MONGODB_DB, MONGODB_NOTES } from '@/lib/constant';
+import { v4 as uuidv4 } from "uuid";
+
+// Initialize DynamoDB Client
+const client = new DynamoDBClient({
+    region: process.env.AWS_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    },
+});
+
+// Define the DynamoDB table name
+const DYNAMODB_TABLE_NAME = process.env.DYNAMODB_TABLE_NAME!;
 
 export interface Note {
-    _id?: {
-        $oid: string;
-    };
-    user_id: string;
+    note_id: string; // Partition key
+    user_id: string; // Sort key
     content: string;
     created_at: string;
 }
@@ -15,6 +26,7 @@ export interface Note {
 // Handle GET requests
 export async function GET(request: Request) {
     try {
+        // Verify the access token
         const token = request.headers.get('Authorization')?.split(' ')[1];
         if (!token) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -28,14 +40,20 @@ export async function GET(request: Request) {
         if (!decoded) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
+
         const owner = decoded.sub; // Unique identifier of the authenticated user
 
-        const client = await clientPromise;
-        const db = client.db(MONGODB_DB);
-        const collection = db.collection<Note>(MONGODB_NOTES);
+        // PARTIQL
+        const query = `SELECT * FROM "${DYNAMODB_TABLE_NAME}" WHERE user_id = '${owner}'`;
+        const command = new ExecuteStatementCommand({
+            Statement: query,
+        });
+        const result = await client.send(command);
 
-        // Fetch all notes from the collection
-        const notes = await collection.find({ user_id: owner }).toArray();
+        // Unmarshall DynamoDB items into Note objects
+        const notes = result.Items?.map((item) => unmarshall(item)) as Note[];
+        console.log(notes)
+
         return NextResponse.json({ message: 'Notes fetched', data: notes });
     } catch (error) {
         console.error(error);
@@ -77,21 +95,25 @@ export async function POST(request: Request) {
 
         // Create a new note document
         const newNote: Note = {
+            note_id: uuidv4(), // Generate a unique ID
             user_id: owner,
             content,
             created_at,
         };
 
-        // Insert the new note into the collection
-        const client = await clientPromise;
-        const db = client.db(MONGODB_DB);
-        const collection = db.collection<Note>(MONGODB_NOTES);
+        // Insert the new note into DynamoDB
+        const params = {
+            TableName: DYNAMODB_TABLE_NAME,
+            Item: marshall(newNote),
+        };
 
-        const result = await collection.insertOne(newNote);
+        const command = new PutItemCommand(params);
+        await client.send(command);
+
         return NextResponse.json(
             {
                 message: 'Note created',
-                data: { id: result.insertedId },
+                data: { id: newNote.note_id },
             },
             { status: 201 }
         );
