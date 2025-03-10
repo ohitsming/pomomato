@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DynamoDBClient, PutItemCommand, ExecuteStatementCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, PutItemCommand, ExecuteStatementCommand, DeleteItemCommand } from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { verifyToken } from '@/lib/auth';
 import { v4 as uuidv4 } from "uuid";
@@ -14,7 +14,7 @@ const client = new DynamoDBClient({
 });
 
 // Define the DynamoDB table name
-const DYNAMODB_TABLE_NAME = process.env.DYNAMODB_TABLE_NAME!;
+const DYNAMODB_TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || "pomomato.notes";
 
 export interface Note {
     note_id: string; // Partition key
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
         const owner = decoded.sub; // Unique identifier of the authenticated user
 
         // PARTIQL
-        const query = `SELECT * FROM "pomomato.notes" WHERE user_id = '${owner}'`;
+        const query = `SELECT * FROM "${DYNAMODB_TABLE_NAME}" WHERE user_id = '${owner}'`;
         const command = new ExecuteStatementCommand({
             Statement: query,
         });
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 
         // Insert the new note into DynamoDB
         const params = {
-            TableName: "pomomato.notes",
+            TableName: DYNAMODB_TABLE_NAME,
             Item: marshall(newNote),
         };
 
@@ -119,5 +119,48 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error(error);
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    }
+}
+
+
+export async function DELETE(request: Request, { params }: { params: { note_id: string } } ) {
+    
+    try {
+        // Verify the access token
+        const token = request.headers.get('Authorization')?.split(' ')[1];
+        if (!token) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        }
+
+        const decoded = await verifyToken(token).catch((err) => {
+            console.error('Token verification failed:', err);
+            return null;
+        });
+
+        if (!decoded) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        }
+        const owner = decoded.sub; // Unique identifier of the authenticated user
+
+        const body = await request.json();
+        const { note_id } = body;
+
+        if(!note_id) {
+            return NextResponse.json({ message: 'note_id is required' }, { status: 500 });
+        }
+
+        const query = `DELETE FROM "${DYNAMODB_TABLE_NAME}" WHERE note_id = '${note_id}' AND user_id = '${owner}'`;
+
+        const command = new ExecuteStatementCommand({
+            Statement: query,
+        });
+        await client.send(command);
+        return NextResponse.json({ message: "Item deleted successfully" });
+    } catch (error: any) {
+        console.error("Error deleting item:", error);
+        return NextResponse.json(
+            { message: "Failed to delete item", error: error?.message },
+            { status: 500 }
+        );
     }
 }

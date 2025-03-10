@@ -71,8 +71,27 @@ const NoteComponent = () => {
         }
     };
 
-    const handleDeleteNote = (id: number) => {
-        setNotes(notes.filter((note) => note.id !== id));
+    const handleDeleteNote = async(id: number) => {
+        const token = auth.user?.access_token;
+        if (id && token) {
+            const response = await fetch('/api/notes', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ note_id: id }),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to delete note');
+            }
+
+            const data = await response.json();
+            fetchNotes();
+        } else {
+            console.error("missing required fields");
+        }
+
     };
 
     async function fetchNotes() {
