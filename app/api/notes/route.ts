@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
-import { DynamoDBClient, PutItemCommand, QueryCommand, ExecuteStatementCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, PutItemCommand, ExecuteStatementCommand } from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { verifyToken } from '@/lib/auth';
 import { v4 as uuidv4 } from "uuid";
 
 // Initialize DynamoDB Client
 const client = new DynamoDBClient({
-    region: process.env.AWS_REGION,
+    region: process.env.NEXT_AWS_REGION,
     credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+        accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY!,
     },
 });
 
@@ -52,7 +52,6 @@ export async function GET(request: Request) {
 
         // Unmarshall DynamoDB items into Note objects
         const notes = result.Items?.map((item) => unmarshall(item)) as Note[];
-        console.log(notes)
 
         return NextResponse.json({ message: 'Notes fetched', data: notes });
     } catch (error) {
