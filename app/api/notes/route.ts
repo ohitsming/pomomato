@@ -44,7 +44,7 @@ export async function GET(request: Request) {
         const owner = decoded.sub; // Unique identifier of the authenticated user
 
         // PARTIQL
-        const query = `SELECT * FROM "${DYNAMODB_TABLE_NAME}" WHERE user_id = '${owner}'`;
+        const query = `SELECT * FROM "pomomato.notes" WHERE user_id = '${owner}'`;
         const command = new ExecuteStatementCommand({
             Statement: query,
         });
