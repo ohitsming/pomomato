@@ -88,7 +88,9 @@ const NoteComponent = () => {
                 const data = await response.json();
 
                 if(data?.data && data.data.length > 0) {
-                    const transformedNotes: Note[] = data.data.map((note: API_NOTE) => ({
+                    const transformedNotes: Note[] = data.data.sort((a: API_NOTE, b: API_NOTE) => {
+                        return a.created_at.localeCompare(b.created_at);
+                    }).map((note: API_NOTE) => ({
                         id: note.note_id, 
                         content: note.content, 
                     }));

@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 
         // Insert the new note into DynamoDB
         const params = {
-            TableName: DYNAMODB_TABLE_NAME,
+            TableName: "pomomato.notes",
             Item: marshall(newNote),
         };
 
