@@ -69,7 +69,7 @@ export default function AboutPage() {
     return (
         <>
             <Script
-                id="faq-structured-data"
+                id="about-structured-data"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
             />

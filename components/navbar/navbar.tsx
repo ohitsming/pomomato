@@ -61,7 +61,7 @@ const OverlayNavbar = ({
                         }
 
                         const data = await response.json();
-                        setUser(data);
+                        setUser(data.user);
 
                     } catch (error) {
                         console.error(error);

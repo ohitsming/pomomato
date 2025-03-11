@@ -1,15 +1,6 @@
 'use client'
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-type User = {
-    id: string;
-    email: string;
-    subscription: {
-        plan: string;
-        status: string;
-        expiry: number;
-    };
-};
+import { User } from '@/app/api/users/route';
 
 type UserContextType = {
     user: User | null;

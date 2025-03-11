@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
     return (
         <>
             <Script
-                id="privacy-policy-structured-data"
+                id="terms-structured-data"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
             />

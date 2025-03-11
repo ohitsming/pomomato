@@ -19,7 +19,7 @@ export default function ContactPage() {
     return (
         <>
             <Script
-                id="privacy-policy-structured-data"
+                id="contact-us-structured-data"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
             />

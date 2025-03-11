@@ -3,11 +3,24 @@ import LoginModal from "@/components/login/login";
 import { useUser } from "@/components/user-context/userContext";
 import { useState } from "react";
 import { useAuth } from "react-oidc-context";
+import { MAX_NOTES } from "@/lib/constant";
+import Script from "next/script";
+import { useRouter } from "next/navigation";
+
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Pricing | Pomomato AI - Study Smarter with AI-Powered Focus Sessions",
+    "description": "Learn more about Pomomato pricing, advance features with pomodoro timer combines timed focus sessions, integrated note-taking, and AI-powered summaries to help you study effectively and achieve your goals.",
+    "url": "https://pomomato.com/pricing",
+};
 
 export default function PricingPage() {
     const auth = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { user } = useUser();
+    const router = useRouter();
     
     const onCloseModal = () => {
         setIsModalOpen(false);
@@ -18,14 +31,12 @@ export default function PricingPage() {
             if(!auth.isAuthenticated) {
                 setIsModalOpen(true);
                 return;
-            }
-
-            console.log(user)
-
-            if(tier === 'free') {
-
-            } else if (tier === 'pro') {
-
+            } else {
+                if(tier === 'free' && user?.subscription_status != 'free') {
+                    // downgrade plan
+                } else if (tier === 'pro' && user?.subscription_status != 'pro') {
+                    // upgrade plan
+                } 
             }
         })
     }
@@ -34,20 +45,45 @@ export default function PricingPage() {
         const date = new Date(new Date().setMonth(new Date().getMonth() + 1));
         return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
     };
+
+    const getPlanText = (tier: string) => {
+        if(tier === 'free') {
+            if(auth.isAuthenticated) {
+                if(user?.subscription_status == "free") {
+                    return "Current plan";
+                } else {
+                    return "Downgrade to Free";
+                }
+            } 
+
+            return 'Get Started for Free';
+        } 
+        else {
+            if(auth.isAuthenticated) {
+                if(user?.subscription_status == "pro") {
+                    return "Current plan";
+                } else {
+                    return "Coming Soon";
+                }
+            } 
+
+            return 'Go Pro';
+        }
+    }
       
     const plans = [
         {
             name: 'Free',
             price: '$0',
             features: [
-                'Pomodoro Timer to stay focused',
-                'Create up to 7 notes',
-                'Basic text formatting (bold, italics, etc.)',
-                'AI-generated note summaries up to 7 notes',
-                'Join the community for support',
                 'Light, unobtrusive ads',
+                'Pomodoro Timer to stay focused',
+                `Create up to ${MAX_NOTES} notes`,
+                'Basic text formatting (bold, italics, etc.)',
+                `AI-generated note summaries up to ${MAX_NOTES} notes`,
+                'Join the community for support',
             ],
-            cta: 'Get Started for Free',
+            cta: getPlanText('free'),
             subtext: "",
             ctaFunction: getSubscription('free'),
         },
@@ -55,15 +91,15 @@ export default function PricingPage() {
             name: 'Pro',
             price: '$2.99',
             features: [
+                'Completely ad-free',
                 'Fully customizable Pomodoro Timer',
                 'Create unlimited notes',
                 'Advanced formatting (tables, code blocks, and more)',
                 'AI-powered note summaries',
-                'Completely ad-free',
                 'Early access to new features'
             ],
-            cta: 'Go Pro',
-            subtext: `This is a subscription service that renews automatically on ${getSubscriptionEndDate()}. 
+            cta: getPlanText('pro'),
+            subtext: `This is a subscription service that renews automatically every month. 
                 Cancel anytime before the renewal date in your account settings.`,
             ctaFunction: getSubscription('pro'),
         }
@@ -71,9 +107,12 @@ export default function PricingPage() {
 
     return (
         <>
+            <Script
+                id="pricing-structured-data"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+            />
             <section className="bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 py-24 sm:py-32">
-
-
                 <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto">
                         <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">

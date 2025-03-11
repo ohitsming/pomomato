@@ -5,6 +5,10 @@ import 'react-quill/dist/quill.snow.css'; // Import the styles
 import { FaTrash } from 'react-icons/fa'; // Import the trash can icon
 import { useAuth } from 'react-oidc-context';
 import { Note as API_NOTE } from '@/app/api/notes/route';
+import { MAX_NOTES } from '@/lib/constant';
+import { useUser } from '@/components/user-context/userContext';
+import FeatureLimitModal from '@/components/feature-limit/feature-limit';
+import { useRouter } from "next/navigation";
 
 
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -19,7 +23,11 @@ type Note = {
 const NoteComponent = () => {
     const [notes, setNotes] = useState<Note[]>([]);
     const [newNote, setNewNote] = useState<string>('');
+    const [showLimitModal, setShowLimitModal] = useState(false);
+
     const auth = useAuth();
+    const { user } = useUser();
+    const router = useRouter();
 
     // Rich text editor modules and formats
     const modules = {
@@ -59,7 +67,6 @@ const NoteComponent = () => {
                 if (!response.ok) {
                     throw new Error('Failed to save note');
                 }
-
                 const data = await response.json();
 
             } catch (error) {
@@ -86,12 +93,37 @@ const NoteComponent = () => {
                 throw new Error('Failed to delete note');
             }
 
-            const data = await response.json();
+            // const data = await response.json();
             fetchNotes();
         } else {
             console.error("missing required fields");
         }
 
+    };
+
+    const updateNewNote = (text: string) => {
+        if(!user && !notes) {
+            return;
+        }
+
+        if(user?.subscription_status === "free" && notes.length >= MAX_NOTES) {
+            setShowLimitModal(true);
+            // console.log("OVER THE LIMIT")
+        } else {
+            setNewNote(text);
+        }
+    }
+
+    const handleCloseModal = () => {
+        console.log("HERE")
+        setShowLimitModal(false); // Close the modal
+    };
+
+    const handleUpgrade = () => {
+        // Redirect to the upgrade page or handle the upgrade logic
+        console.log('Redirecting to upgrade page...');
+        setShowLimitModal(false); // Close the modal
+        router.push("/pricing")
     };
 
     async function fetchNotes() {
@@ -166,7 +198,7 @@ const NoteComponent = () => {
                 <div className="p-4 border-t">
                     <ReactQuill
                         value={newNote}
-                        onChange={setNewNote}
+                        onChange={(value) => updateNewNote(value)}
                         modules={modules}
                         formats={formats}
                         placeholder="Start typing your note here..."
@@ -174,6 +206,11 @@ const NoteComponent = () => {
                     />
                 </div>
             </div>
+            <FeatureLimitModal
+                isOpen={showLimitModal}
+                onClose={handleCloseModal}
+                onUpgrade={handleUpgrade}
+            ></FeatureLimitModal>
         </div>
     );
 };
