@@ -5,11 +5,11 @@ import { ProtectedRoute } from "@/components/protected/protected";
 import KofiWidget from "@/components/kofi/kofi";
 import { useAuth } from "react-oidc-context";
 import NoteComponent from "@/components/notebook/notebook";
+import Footer from "@/components/footer/footer";
 
 export default function Home() {
     const [isSplit, setIsSplit] = useState(false);
     const auth = useAuth();
-
 
     useEffect(() => {
         if(!auth.isAuthenticated) {
@@ -42,6 +42,7 @@ export default function Home() {
                 </div>
             </div>
             <KofiWidget></KofiWidget>
+            <Footer></Footer>
 
         </>
     )

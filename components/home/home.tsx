@@ -43,7 +43,6 @@ export default function HomeComponent({toggleSplit}: any) {
     };
     
     const onCloseModal = () => {
-        // check auth 
         setIsModalOpen(false);
     };
 

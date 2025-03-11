@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import { useAuth } from "react-oidc-context";
+import { useUser } from '@/components/user-context/userContext';
 
 interface NavLink {
     label: string;
@@ -21,6 +22,7 @@ const OverlayNavbar = ({
 }: OverlayNavbarProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const auth = useAuth();
+    const { setUser, user } = useUser();
 
     const domain = process.env.NEXT_PUBLIC_DOMAIN_URI || "https://pomomato.com"
     const signoutRedirect = () => {
@@ -35,6 +37,42 @@ const OverlayNavbar = ({
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
+
+    useEffect(() => {
+
+        // store user config in context
+        const fetchUserConfig = async() => {
+            if(!user) {
+                const token = auth.user?.access_token;
+                // check dynamo db for user config
+                if (token) {
+                    try {
+                        const response = await fetch('/api/users', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${token}`,
+                            }
+                        });
+
+                        // if response is not okay  
+                        if (!response.ok) {
+                            throw new Error('failed login');
+                        }
+
+                        const data = await response.json();
+                        setUser(data);
+
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+            return user;
+        }
+
+        fetchUserConfig();
+    })
 
     return (
         <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent`}>

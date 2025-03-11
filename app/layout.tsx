@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import Providers from '../components/providers/providers';
 import Footer from '@/components/footer/footer';
+import { UserProvider } from '@/components/user-context/userContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -48,7 +49,8 @@ export const metadata: Metadata = {
 // Define your navigation links
 const navLinks = [
     { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' }
+    { label: 'About', href: '/about' },
+    { label: "Pricing", href: '/pricing'}
 ];
 
 export default function RootLayout({
@@ -56,21 +58,23 @@ export default function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
+    
     return (
         <html lang="en">
             <Providers>
-                <body className={inter.className}>
-                    <OverlayNavbar
-                        links={navLinks}
-                    ></OverlayNavbar>
+                <UserProvider>
+                    <body className={inter.className}>
+                        <OverlayNavbar
+                            links={navLinks}
+                        ></OverlayNavbar>
 
-                    <main>
-                        <div className="sm:px-6 lg:px-8 bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 ">
-                            {children}
-                        </div>
-                    </main>
-                    <Footer></Footer>
-                </body>
+                        <main>
+                            <div className="bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 ">
+                                {children}
+                            </div>
+                        </main>
+                    </body>
+                </UserProvider>
             </Providers>
 
             <GoogleAnalytics gaId="G-W26QHF4ZHG"></GoogleAnalytics>
