@@ -4,21 +4,22 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import Providers from '../components/providers/providers';
+import Footer from '@/components/footer/footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_DOMAIN_URI || 'https://pomomato.com'),
-    title: 'Pomomato AI - Pomodoro Technique With Focus Sessions And AI To Boost Productivity.',
+    title: 'Pomomato AI - Pomodoro Technique With Focus Sessions And Artificial Intelligence To Boost Productivity.',
     icons: {
         icon: "/metadata/icon.ico"
     },
     description: `Pomomato AI combines the Pomodoro Technique with smart focus 
-        sessions and AI powered study tools to boost productivity. Stay focused, beat procrastination, and achieve more 
+        sessions and artificial intelligence powered study tools to boost productivity. Stay focused, beat procrastination, and achieve more 
         with personalized insights and task prioritization.`,
-    keywords: ['Pomomato AI', 'Pomodoro Technique', 'productivity', 'focus sessions', 'AI-powered'],
+    keywords: ['Pomomato AI', 'Pomodoro Technique', 'productivity', 'focus sessions', 'AI-powered', "artificial intelligence", "timer"],
     openGraph: {
-        title: 'Pomomato AI - Pomodoro Technique With Focus Session And AI to Boost Productivity',
+        title: 'Pomomato AI - Pomodoro Technique With Focus Session And Artificial Intelligence to Boost Productivity',
         description:
             `Pomomato AI combines the Pomodoro Technique with smart focus 
             sessions and AI powered study tools to boost productivity. Stay focused, beat procrastination, and achieve more 
@@ -68,6 +69,7 @@ export default function RootLayout({
                             {children}
                         </div>
                     </main>
+                    <Footer></Footer>
                 </body>
             </Providers>
 
