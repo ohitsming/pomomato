@@ -5,11 +5,12 @@ import { ProtectedRoute } from "@/components/protected/protected";
 import KofiWidget from "@/components/kofi/kofi";
 import { useAuth } from "react-oidc-context";
 import NoteComponent from "@/components/notebook/notebook";
+import OneNoteComponent from "@/components/notebook/onenote";
+import Footer from "@/components/footer/footer";
 
 export default function Home() {
     const [isSplit, setIsSplit] = useState(false);
     const auth = useAuth();
-
 
     useEffect(() => {
         if(!auth.isAuthenticated) {
@@ -36,12 +37,14 @@ export default function Home() {
                         <ProtectedRoute>
                             <div className={`${isSplit ? "md:w-3/5" : "w-full"} h-full p-5 overflow-y-auto my-16`}>
                                 <NoteComponent></NoteComponent>
+                                {/* <OneNoteComponent></OneNoteComponent> */}
                             </div>
                         </ProtectedRoute>
                     )}
                 </div>
             </div>
             <KofiWidget></KofiWidget>
+            <Footer></Footer>
 
         </>
     )
