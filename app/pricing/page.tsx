@@ -36,6 +36,7 @@ export default function PricingPage() {
                     // downgrade plan
                 } else if (tier === 'pro' && user?.subscription_status != 'pro') {
                     // upgrade plan
+                    
                 } 
             }
         })
@@ -67,7 +68,7 @@ export default function PricingPage() {
                 }
             } 
 
-            return 'Go Pro';
+            return 'Coming Soon';
         }
     }
       

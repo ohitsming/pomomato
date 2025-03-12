@@ -14,7 +14,7 @@ const client = new DynamoDBClient({
 });
 
 // Define the DynamoDB table name
-const DYNAMODB_TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || "pomomato.notes";
+const DYNAMODB_TABLE_NAME = "pomomato.notes";
 
 export interface Note {
     note_id: string; // Partition key
