@@ -43,7 +43,7 @@ export default function FocusSessionsPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
             />
-            <section className="bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 py-24 sm:py-32">
+            <section className="h-screen bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 py-24 sm:py-32">
                 <div className="mx-auto max-w-7xl px-6 lg:px-36">
                     <header className="mx-auto max-w-2xl lg:text-center">
                         <h1 className="text-base/7 font-semibold text-green-600">Focus Sessions</h1>

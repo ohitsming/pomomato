@@ -108,14 +108,12 @@ const NoteComponent = () => {
 
         if(user?.subscription_status === "free" && notes.length >= MAX_NOTES) {
             setShowLimitModal(true);
-            // console.log("OVER THE LIMIT")
         } else {
             setNewNote(text);
         }
     }
 
     const handleCloseModal = () => {
-        console.log("HERE")
         setShowLimitModal(false); // Close the modal
     };
 

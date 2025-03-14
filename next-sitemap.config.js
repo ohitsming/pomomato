@@ -8,7 +8,8 @@ module.exports = {
     changefreq: 'daily',
     priority: 0.8,
     exclude: [
-        '/auth/*'
+        '/auth/*',
+        '/payment/*'
     ],
     generateRobotsTxt: true, // Generate robots.txt
     sitemapSize: 7000, // Split large sitemaps into multiple files

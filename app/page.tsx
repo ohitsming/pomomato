@@ -36,8 +36,8 @@ export default function Home() {
                     {isSplit && (
                         <ProtectedRoute>
                             <div className={`${isSplit ? "md:w-3/5" : "w-full"} h-full p-5 overflow-y-auto my-16`}>
-                                <NoteComponent></NoteComponent>
-                                {/* <OneNoteComponent></OneNoteComponent> */}
+                                {/* <NoteComponent></NoteComponent> */}
+                                <OneNoteComponent></OneNoteComponent>
                             </div>
                         </ProtectedRoute>
                     )}

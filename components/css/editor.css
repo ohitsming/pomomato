@@ -1,0 +1,70 @@
+/* Custom CSS to make ReactQuill look like Reddit's editor */
+.ql-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    border: 1px solid #ccc !important;
+    /* Reddit-like border */
+    border-radius: 4px;
+    /* Slightly rounded corners */
+}
+
+.ql-editor {
+    min-height: 150px;
+    /* Set a minimum height for the editor */
+    padding: 12px;
+    /* Reddit-like padding */
+    line-height: 1.5;
+    /* Reddit-like line height */
+}
+
+.ql-toolbar {
+    border: none !important;
+    /* Remove default toolbar border */
+    border-bottom: 1px solid #ccc !important;
+    /* Add a bottom border */
+    background-color: #f9f9f9;
+    /* Light gray background for the toolbar */
+    border-radius: 4px 4px 0 0;
+    /* Rounded corners at the top */
+}
+
+.ql-toolbar button {
+    margin: 0 4px;
+    /* Add spacing between toolbar buttons */
+}
+
+.ql-toolbar button:hover {
+    background-color: #e0e0e0;
+    /* Hover effect for toolbar buttons */
+}
+
+.ql-editor::before {
+    padding-left: 20px;
+    color: #aaa;
+    font-style: italic;
+}
+.ql-editor::placeholder {
+    color: #999;
+    margin: 35px;
+    /* Placeholder text color */
+    font-style: italic;
+    /* Italic placeholder text */
+}
+
+.ql-editor {
+    border: none;
+    line-height: 2;
+    padding: 30px;
+    font-size: 16px;
+    color: #3e3e3e;
+}
+
+.ql-editor {
+    tab-size: 20;
+    -moz-tab-size: 20;
+    -o-tab-size: 20;
+}
+
+.ql-editor ol, .ql-editor ul {
+    padding-left: 0em;
+}
