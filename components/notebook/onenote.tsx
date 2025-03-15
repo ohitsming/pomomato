@@ -23,13 +23,7 @@ type Note = {
 };
 
 const OneNoteComponent = () => {
-    const [notes, setNotes] = useState<Note[]>(() => {
-        if (typeof window !== 'undefined') {
-            const savedNotes = localStorage.getItem('notes');
-            return savedNotes ? JSON.parse(savedNotes) : [];
-        }
-        return [];
-    });
+    const [notes, setNotes] = useState<Note[]>([]);
 
     const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
     const [editorContent, setEditorContent] = useState<string>('');
@@ -40,13 +34,6 @@ const OneNoteComponent = () => {
     const { user } = useUser();
     const router = useRouter();
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('notes', JSON.stringify(notes));
-        }
-    }, [notes]);
-
-    const selectedNote = notes.find((note) => note.id === selectedNoteId) || null;
 
     const modules = {
         toolbar: [
@@ -77,8 +64,8 @@ const OneNoteComponent = () => {
         setShowLimitModal(false); // Close the modal
     };
 
-    const handleAddNote = () => {
-
+    const handleAddNote = async() => {
+        console.log("handleAddNote()")
         if(!user && !notes) {
             return;
         }
@@ -86,61 +73,89 @@ const OneNoteComponent = () => {
         if(user?.subscription_status === "free" && notes.length >= MAX_NOTES) {
             setShowLimitModal(true);
         } else {
+            // create new note with empty content
+            try {
+                const token = auth.user?.access_token;
+                if(token) {
+                    const response = await fetch('/api/notes', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({ content: "" }),
+                    });
+                    console.log(response)
+    
+                    if (!response.ok) {
+                        throw new Error('Failed to save note');
+                    }
+                    const result = await response.json();
+                    console.log(result)
+                    if(result?.data?.id) {
+                        setSelectedNoteId(result.data.id)
+                        fetchNotes();
+                    }
+                }
 
-            const newNote: Note = {
-                id: Date.now(),
-                content: '',
-                createdAt: new Date().toISOString(),
-            };
-
-            if (selectedNoteId !== null) {
-                setNotes((prevNotes) => {
-                    prevNotes.map((note) =>
-                        note.id === selectedNoteId ? { ...note, content: editorContent } : note
-                    );
-                    return [newNote, ...prevNotes];
-                });
-            } else {
-                setNotes((prevNotes) => [newNote, ...prevNotes]);
+            } catch(error) {
+                console.error(error)
             }
-
-            setSelectedNoteId(newNote.id);
-            setEditorContent('');
         }
     };
 
-    const handleDeleteNote = (id: number) => {
-        setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
-        if (selectedNoteId === id) {
-            setSelectedNoteId(null);
-            setEditorContent('');
+    const handleDeleteNote = async(id: number) => {
+        // setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+        const token = auth.user?.access_token;
+        if (id && token) {
+            const response = await fetch('/api/notes', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ note_id: id }),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to delete note');
+            }
+            if (selectedNoteId === id) {
+                setSelectedNoteId(null);
+                setEditorContent('');
+            }
+
+            fetchNotes();
+        } else {
+            console.error("missing required fields");
         }
+        
     };
 
     const handleSaveNote = async(note: Note) => {
-        console.log('save note', note)
-        // const token = auth.user?.access_token;
-        // if (note?.content && note?.content.trim() !== '' && token) {
+        
+        const token = auth.user?.access_token;
+        if (note?.content && note?.content.trim() !== '' && token) {
             
-        //     try {
-        //         const response = await fetch('/api/notes', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //                 Authorization: `Bearer ${token}`,
-        //             },
-        //             body: JSON.stringify({ content: note.content }),
-        //         });
+            try {
+                const response = await fetch('/api/notes', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ content: note.content, note_id: note.id }),
+                });
 
-        //         if (!response.ok) {
-        //             throw new Error('Failed to save note');
-        //         }
+                if (!response.ok) {
+                    throw new Error('Failed to save note');
+                }
+                fetchNotes();
 
-        //     } catch (error) {
-        //         console.error(error);
-        //     } 
-
-        // }
+            } catch (error) {
+                console.error(error);
+            } 
+            
+        }
     }
 
     const handleUpdateNote = (content: string) => {
@@ -169,9 +184,7 @@ const OneNoteComponent = () => {
         }
 
         // Switch to the new note
-        const newSelectedNote = notes.find((note) => note.id === id);
         setSelectedNoteId(id);
-        setEditorContent(newSelectedNote ? newSelectedNote.content : '');
     };
 
     const groupNotesByDate = () => {
@@ -229,6 +242,13 @@ const OneNoteComponent = () => {
     }
 
     useEffect(() => {
+        // update editor whenever noteId is changed
+        const newSelectedNote = notes.find((note) => note.id === selectedNoteId);
+        setEditorContent(newSelectedNote ? newSelectedNote.content : '');
+
+    }, [selectedNoteId])
+
+    useEffect(() => {
 
         fetchNotes();
 
@@ -245,7 +265,7 @@ const OneNoteComponent = () => {
                 {/* Editor Section */}
                 <div className={`flex-1 flex flex-col pr-3`}>
                     <div className="flex-1 px-2 py-6">
-                        {selectedNote ? (
+                        {selectedNoteId ? (
                             <>
                                 <div className="mb-4 h-full flex flex-col">
                                     <ReactQuill
