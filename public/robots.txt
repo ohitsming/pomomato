@@ -1,9 +1,11 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /auth/*
+Disallow: /payment/*
 
 # Host
-Host: https://pomomato.com
+Host: https://pomomato.com/
 
 # Sitemaps
 Sitemap: https://pomomato.com/sitemap.xml
